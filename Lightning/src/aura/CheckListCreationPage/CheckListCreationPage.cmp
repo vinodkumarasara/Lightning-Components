@@ -1,0 +1,56 @@
+<!-- CheckListCreationPage.cmp -->
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,flexipage:availableForRecordHome" access="global" >
+	<aura:attribute name="newCheckList" type="Object"/>
+    <aura:attribute name="simpleNewCheckList" type="Object"/>
+    <aura:attribute name="newCheckListError" type="String"/>
+    <aura:attribute name="picklistValues" type="Object" />
+    <aura:attribute name="TypeVal" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="ChecklistEvent" type="c:ChecklistEvent"/>
+    <force:recordData aura:id="CheckListRecordCreator" 
+                      layoutType="FULL"
+                      targetRecord="{!v.newCheckList}"
+                      targetFields="{!v.simpleNewCheckList}"
+                      targetError="{!v.newCheckListError}" />
+                      
+    <!-- Display the new CheckList form -->
+    <div class="Create CheckList">
+        <lightning:card iconName="action:new_CheckList" title="Create CheckList">
+            <div class="slds-p-horizontal--small">
+                <lightning:input aura:id="CheckListField" label="CheckList Name" value="{!v.simpleNewCheckList.Name}"/>
+                <!--<lightning:input aura:id="CheckListField" label="Type" value="{!v.simpleNewCheckList.Type__c}"/>-->
+                
+				<c:PickListValues sObjectName="CheckList__c" fieldName="Type__c" picklistValues="{!v.picklistValues}" />
+				
+				<div class="slds-form-element">
+                      <label class="slds-form-element__label" for="select-01">Type</label>
+                      <div class="slds-form-element__control">
+                        <div class="slds-select_container">
+                          
+                          <lightning:select aura:id="typeSelect"
+                                name="Type"
+                                label="Select Type"
+                               value="{!v.TypeVal}"
+                               >
+                            <option value="">Please select</option>
+                            <aura:iteration items="{!v.picklistValues}" var="item">
+                                <option value="{!item}">{!item}</option>
+                            </aura:iteration>
+                              </lightning:select>
+                         
+                        </div>
+                      </div>
+                    </div>
+                
+                <br/>
+                <lightning:button label="Save CheckList" variant="brand" onclick="{!c.handleSaveCheckList}"/>
+            </div>
+        </lightning:card>
+    </div>
+
+    <!-- Display Lightning Data Service errors -->
+    <aura:if isTrue="{!not(empty(v.newCheckListError))}">
+        <div class="recordError">
+            {!v.newCheckListError}</div>
+    </aura:if>
+</aura:component>

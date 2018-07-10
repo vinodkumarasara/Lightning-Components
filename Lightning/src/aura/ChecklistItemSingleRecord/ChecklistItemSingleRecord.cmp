@@ -1,0 +1,79 @@
+<!-- ChecklistItemSingleRecord.cmp -->
+<aura:component controller="ChecklistController" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,flexipage:availableForRecordHome" access="global" >
+    <aura:attribute name="showSaveCancelBtn" type="boolean"/>
+    <aura:attribute name="showErrorClass" type="boolean" default="false"/>
+    <aura:attribute name="index" type="string" />
+    <aura:attribute name="nameEditMode" type="boolean" default="false" />
+    <aura:attribute name="StatusEditMode" type="boolean" default="false" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="singlechecklistItem" type="sobject" default="{'sobjectType' : 'CheckList_Item__c',
+                                                                             'Name' : '',
+                                                                             'Status__c': '',
+                                                                       		 'Description__c':''
+                                                                             }"/>
+    <tr>
+        <td><div class="slds-truncate">{!v.index}</div></td>
+        <td ondblclick="{!c.EditName}" class="{! v.showErrorClass == true ? 'slds-cell-edit slds-has-error' : 'slds-cell-edit'}">
+            <span class="slds-grid slds-grid_align-spread">
+                <aura:if isTrue="{!v.nameEditMode == false}">
+                    <span class="slds-truncate" title="Description">{!v.singlechecklistItem.Description__c}</span>
+                    <button onclick="{!c.EditName}" class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="0" title="Edit Description">
+                        <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit"/>
+                    </button>
+                    <!-- Inline Edit Section in else case--> 
+                    <aura:set attribute="else">
+                        <section  tabindex="0" class="slds-popover slds-popover_edit" role="dialog" style="position: absolute; top: 0px">
+                            <div class="slds-popover__body">
+                                <div class="slds-form-element slds-grid slds-wrap">
+                                    <div class="slds-form-element__control slds-grow">
+                                        <ui:inputText class="slds-input"
+                                                      labelClass="slds-form-element__label slds-form-element__label_edit slds-no-flex"
+                                                      aura:id="inputId"
+                                                      blur="{!c.closeNameBox}"
+                                                      change="{!c.onNameChange}"
+                                                      required="true"
+                                                      label="Description"
+                                                      value="{!v.singlechecklistItem.Description__c}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <span id="form-end" tabindex="0"></span>
+                        </section> 
+                    </aura:set> 
+                </aura:if>
+            </span>
+        </td>
+       <td ondblclick="{!c.inlineEditstatus}" class="{! v.showErrorClass == true ? 'slds-cell-edit slds-has-error' : 'slds-cell-edit'}">
+            <span class="slds-grid slds-grid_align-spread">
+                <aura:if isTrue="{!v.StatusEditMode == false}">
+                    <span class="slds-truncate checkbox" title="Status">                        
+                        <lightning:input name="Status" disabled="true"  type="checkbox" checked="{!v.singlechecklistItem.Status__c}" />
+                        </span>
+                    <button onclick="{!c.inlineEditstatus}" class="slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small" tabindex="1" title="Edit Status">
+                        <lightning:icon iconName="utility:edit" size="xx-small" alternativeText="edit"/>
+                    </button>
+                    <!-- Inline Edit Section in else case--> 
+                    <aura:set attribute="else">
+                        <section  tabindex="0" class="slds-popover slds-popover_edit" role="dialog" style="position: absolute; top: 0px">
+                            <div class="slds-popover__body">
+                                <div class="slds-form-element slds-grid slds-wrap">
+                                    <div class="slds-form-element__control slds-grow" style="width:20%">
+                                        <ui:inputCheckbox class="slds-inputcheckbox" 
+                                                      labelClass="slds-form-element__label slds-form-element__label_edit slds-no-flex"
+                                                      aura:id="inputId1"
+                                                      blur="{!c.closeStatusBox}"
+                                                      change="{!c.onStatusChange}"                                                      
+                                                      label="Status"
+                                                      value="{!v.singlechecklistItem.Status__c}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <span id="form-end" tabindex="1"></span>
+                        </section> 
+                    </aura:set> 
+                </aura:if>
+            </span>
+        </td>
+        
+    </tr>
+</aura:component>

@@ -1,0 +1,32 @@
+<!--CheckListItemCreation.cmp -->
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,flexipage:availableForRecordHome" access="global" >
+	<aura:attribute name="newCheckListItem" type="Object"/>
+    <aura:attribute name="simpleNewCheckListItem" type="Object"/>
+    <aura:attribute name="newCheckListItemError" type="String"/>    
+    <aura:attribute name="CheckListId" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:registerEvent name="ChecklistEvent" type="c:ChecklistEvent"/>
+    <force:recordData aura:id="CheckListItemRecordCreator" 
+                      layoutType="FULL"
+                      targetRecord="{!v.newCheckListItem}"
+                      targetFields="{!v.simpleNewCheckListItem}"
+                      targetError="{!v.newCheckListItemError}" />
+                      
+    <!-- Display the new CheckList form -->
+    <div class="Create CheckList Item">
+        <lightning:card iconName="action:new_CheckListItem" title="Please enter CheckList Item Description">
+            <div class="slds-p-horizontal--small">
+                
+                <lightning:input aura:id="CheckListItemField" label="Description" value="{!v.simpleNewCheckListItem.Description__c}"/>
+               	<br/>
+                <lightning:button label="Save CheckList Item" variant="brand" onclick="{!c.handleSaveCheckListItem}"/>
+            </div>
+        </lightning:card>
+    </div>
+
+    <!-- Display Lightning Data Service errors -->
+    <aura:if isTrue="{!not(empty(v.newCheckListItemError))}">
+        <div class="recordError">
+            {!v.newCheckListItemError}</div>
+    </aura:if>
+</aura:component>

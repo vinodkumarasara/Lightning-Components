@@ -1,0 +1,118 @@
+<!-- CheckListMainComp.cmp -->
+<aura:component controller="ChecklistController" implements="flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,flexipage:availableForRecordHome" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="checklistExist" type="boolean"></aura:attribute>
+    <aura:attribute name="createchecklst" type="boolean" default="false"></aura:attribute>
+    <aura:attribute name="createchecklstitm" type="boolean" default="false"></aura:attribute>
+    <aura:attribute name="CheckListRecd" type="CheckList__c"/>
+    <aura:attribute name="CheckListItems" type="CheckList_Item__c[]"/>
+    <aura:attribute name="componentHeader" type="String" default="Checklist"/>
+    <aura:attribute name="showSaveCancelBtn" type="boolean" description="show hide save and cancel" default="false"/>
+    <aura:handler event="c:ChecklistEvent" action="{!c.closeModel}"/>
+    <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="{!v.componentHeader}">{!v.componentHeader}</h1>
+    <aura:if isTrue="{!v.checklistExist == true}">
+        <div class="CheckList Details"> 
+            <lightning:card iconName="standard:task" title="{!'CheckList Name: '+ v.CheckListRecd.Name}" >
+                <div class="slds-p-horizontal--small">
+                    <p class="slds-text-heading--small">
+                        <lightning:formattedText title="CheckList Type" value="{! 'Checklist Type : '+v.CheckListRecd.Type__c}" />
+                        
+                    </p>            
+                </div>
+            </lightning:card>    
+        </div>
+        <br/>
+        <!-- checklist Items -->
+        <lightning:button variant="brand" label="Create CheckList Item" onclick="{!c.CreateCheckListItem}" />
+        <div class="slds-m-around_large">
+            <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="CheckList Items">CheckList Items</h1>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="slds-text-title--caps">
+                        <th scope="col"><div class="slds-truncate" title="Id">S.No</div></th>
+                        <th scope="col"><div class="slds-truncate" title="Description">Description</div></th>
+                        <th scope="col"><div class="slds-truncate" title="Status">Status</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.CheckListItems}" var="chitm" indexVar="index">
+                        <!-- Child Component -->
+                        <c:ChecklistItemSingleRecord singlechecklistItem="{!chitm}"
+                                                     showSaveCancelBtn="{!v.showSaveCancelBtn}"
+                                                     index="{!index + 1}" />
+                    </aura:iteration>
+                </tbody>
+            </table>
+            <aura:if isTrue="{!v.showSaveCancelBtn}">
+                <lightning:buttonGroup class="slds-m-around_medium">
+                    <lightning:button label="Save" onclick="{!c.Savechecklistitem}" />
+                </lightning:buttonGroup>
+            </aura:if>
+        </div>    
+        
+        <aura:set attribute="else">
+            <br/>                
+            <lightning:button variant="brand" label="Create CheckList" onclick="{!c.CreateCheckList}" />
+            <br/><br/>
+            <lightning:tile label="Please click on the Create CheckList button to create a Checklist." >
+           	</lightning:tile>
+        </aura:set>
+    </aura:if>
+    
+    <!-- modal popup for checklist -->
+    <aura:if isTrue="{!v.createchecklst}">
+        
+        <!--###### MODAL BOX Start From Here ######--> 
+        <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                <!-- ###### MODAL BOX HEADER Part Start From Here ######-->
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModel}">
+                        X
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="header99" class="slds-text-heading--medium"></h2>
+                </div>
+                <!--###### MODAL BOX BODY Part Start From Here ######-->
+                <div class="slds-modal__content slds-p-around--medium">
+                    <c:CheckListCreationPage/>
+                </div>
+                <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}" >Cancel</button>            
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+        <!--###### MODAL BOX Part END Here ######-->
+        
+    </aura:if>
+    <!-- modal popup for checklist Item -->
+    <aura:if isTrue="{!v.createchecklstitm}">
+        
+        <!--###### MODAL BOX Start From Here ######--> 
+        <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+            <div class="slds-modal__container">
+                <!-- ###### MODAL BOX HEADER Part Start From Here ######-->
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModel}">
+                        X
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="header99" class="slds-text-heading--medium"></h2>
+                </div>
+                <!--###### MODAL BOX BODY Part Start From Here ######-->
+                <div class="slds-modal__content slds-p-around--medium">
+                    <c:CheckListItemCreation CheckListId="{!v.CheckListRecd.Id}"/>
+                </div>
+                <!--###### MODAL BOX FOOTER Part Start From Here ######-->
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}" >Cancel</button>            
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+        <!--###### MODAL BOX Part END Here ######-->
+        
+    </aura:if>
+</aura:component>
